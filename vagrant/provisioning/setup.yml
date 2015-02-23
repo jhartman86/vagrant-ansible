@@ -1,0 +1,24 @@
+---
+- hosts: all
+  sudo: yes
+
+  vars:
+    # App Related
+    httpd_doc_root: "/home/vagrant/app"
+    database_name: concrete5_site
+    database_host: "127.0.0.1"
+    database_user: root
+    database_pass: root
+
+    # System Related
+    timezone: UTC
+    php_ppa: php5
+    php_packages: ["php5-cli","php-pear","php5-mysql","php5-readline","php5-gd","php5-curl","php5-xdebug"]
+
+  roles:
+    - init
+    - apache
+    - php
+    - mysql
+    - ruby
+    - nodejs

@@ -1,0 +1,19 @@
+---
+- name: Add PHP5 PPA repository
+  apt_repository: repo=ppa:ondrej/{{ php_ppa }}
+
+- name: Update apt cache
+  apt: update_cache=yes
+
+- name: Install PHP5
+  apt: pkg=php5 state=latest
+
+- name: Install PHP5-cli
+  apt: pkg=php5-cli state=latest
+
+- name: Install PHP packages
+  apt: pkg={{ item }} state=latest
+  with_items: php_packages
+
+- name: Install Composer
+  shell: curl -sS https://getcomposer.org/installer | php

@@ -1,0 +1,13 @@
+---
+- name: Install MySQL
+  apt: pkg={{ item }} state=latest update_cache=yes
+  with_items:
+    - mysql-server
+    - mysql-client
+    - python-mysqldb
+
+- name: Update MySQL root password
+  mysql_user: name=root check_implicit_admin=yes password={{ database_pass }} login_user=root login_password={{ database_pass }}
+
+- name: Create database
+  mysql_db: name={{ database_name }} state=present login_user=root login_password={{ database_pass }}

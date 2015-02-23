@@ -1,0 +1,6 @@
+---
+- name: Register NodeJS PPA
+  shell: curl -sL https://deb.nodesource.com/setup | sudo bash -
+
+- name: Install NodeJS and NPM
+  apt: pkg=nodejs state=installed update_cache=yes
