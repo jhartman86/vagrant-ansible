@@ -23,3 +23,10 @@
 
 - name: Make composer executable
   file: path=/usr/local/bin/composer mode=a+x state=file
+
+# PHP Configuration
+- name: Enable short_open_tags in php.ini
+  lineinfile: dest=/etc/php5/apache2/php.ini regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
+  with_items:
+    - { regexp: "short_open_tag =", line: "short_open_tag = On" }
+  notify: restart_apache

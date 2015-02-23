@@ -1,0 +1,33 @@
+---
+# @todo: fucking composer freezes on install; figure it out
+#- name: Install Concrete5 Composer Dependencies
+#  composer: command=install working_dir=/home/vagrant/app/web/concrete/ optimize_autoloader=yes prefer_source=yes no_dev=no
+#  ignore_errors: true
+
+- name: Gather Concrete5 build status
+  command: which grunt
+  register: grunt_installed
+
+- name: Install Grunt for Concrete5 Asset Build
+  command: npm install -g grunt-cli
+  when: grunt_installed.stdout != "/usr/bin/grunt"
+
+- name: Install NPM dependencies for Concrete5 Asset Build
+  shell: cd /home/vagrant/app/build && npm install
+  when: grunt_installed.stdout != "/usr/bin/grunt"
+
+- name: Execute Concrete5 Asset Build
+  shell: cd /home/vagrant/app/build && grunt release
+  when: grunt_installed.stdout != "/usr/bin/grunt"
+
+#- name: Run Concrete5 CLI Installer
+#  shell: >
+#    php /home/vagrant/app/cli/install-concrete5.php \
+#      --admin-email=change@me.com \
+#      --admin-password=c5@dmin \
+#      --db-database={{ database_name }} \
+#      --db-username={{ database_user }} \
+#      --db-password={{ database_pass }} \
+#      --db-server={{ database_host }} \
+#      --core=/home/vagrant/app/web/concrete/ \
+#      --target=/home/vagrant/app/web/

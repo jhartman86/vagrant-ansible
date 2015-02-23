@@ -27,4 +27,4 @@ printf 'localhost' >> /etc/ansible/hosts
 
 # Execute Ansible provisioner
 cd /vagrant/provisioning
-ansible-playbook setup.yml --connection=local -vvv
+ansible-playbook setup.yml --connection=local
