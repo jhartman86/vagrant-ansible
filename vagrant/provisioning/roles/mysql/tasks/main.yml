@@ -11,3 +11,6 @@
 
 - name: Create database
   mysql_db: name={{ database_name }} state=present login_user=root login_password={{ database_pass }}
+
+- name: Install MySQL Timezone Tables
+  shell: mysql_tzinfo_to_sql 2>/dev/null /usr/share/zoneinfo | mysql -u root --password=root mysql 2>/dev/null
