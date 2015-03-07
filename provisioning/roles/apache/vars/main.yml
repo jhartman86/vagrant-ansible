@@ -1,0 +1,3 @@
+---
+vhost_doc_root: "/home/vagrant/app"
+vhost_env_vars: []

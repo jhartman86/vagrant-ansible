@@ -12,7 +12,7 @@
     - expires
 
 - name: Setup Apache vHost
-  template: src=vhost.conf.tpl dest=/etc/apache2/sites-available/000-default.conf
+  template: src=vhost.conf.j2 dest=/etc/apache2/sites-available/000-default.conf
   notify: restart_apache
 
 - name: Add Vagrant user to www-data/apache group

@@ -1,5 +1,5 @@
 ---
-# https://www.brightbox.com/docs/ruby/ubuntu/
+# Install via Brightbox: https://www.brightbox.com/docs/ruby/ubuntu/
 - name: Gather Ruby version facts
   command: ruby -v
   register: ruby_version

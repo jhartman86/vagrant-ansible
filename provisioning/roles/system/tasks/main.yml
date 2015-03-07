@@ -3,11 +3,19 @@
   apt: update_cache=yes
 
 - name: Install system packages
-  apt: pkg={{ item }} state=latest
+  apt: pkg={{ item }} state=present install_recommends=no
   with_items:
     - git
     - curl
     - software-properties-common
+    - build-essential
+    - autoconf
+    - bison
+    - libssl-dev
+    - libyaml-dev
+    - libncurses5-dev
+    - zlib1g-dev
+    - libcurl4-openssl-dev
 
 - name: Copy locale configuration to /etc/default/locale
   template: src=locale.tpl dest=/etc/default/locale
@@ -15,8 +23,8 @@
 - name: Configure locale
   shell: locale-gen en_US.UTF-8 && dpkg-reconfigure locales
 
-- name: Configure timezone
+- name: Configure timezone step 1
   template: src=timezone.tpl dest=/etc/timezone
 
-- name: Configure timezone 2
+- name: Configure timezone step 2
   file: src=/usr/share/zoneinfo/{{timezone}} dest=/etc/localtime state=link force=yes backup=yes

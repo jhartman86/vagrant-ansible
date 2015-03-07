@@ -1,6 +1,6 @@
 ---
 - name: Add PHP5 PPA repository
-  apt_repository: repo=ppa:ondrej/{{ php_ppa }}
+  apt_repository: repo={{ php_ppa }}
 
 - name: Update apt cache
   apt: update_cache=yes

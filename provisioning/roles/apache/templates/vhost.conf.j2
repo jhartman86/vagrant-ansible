@@ -1,0 +1,15 @@
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    DocumentRoot {{ vhost_doc_root }}
+    ServerName localhost
+    ServerAlias *
+
+{% for item in vhost_env_vars %}
+    SetEnv {{ item.name }} {{ item.value }}
+{% endfor %}
+
+    <Directory {{ vhost_doc_root }}>
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>

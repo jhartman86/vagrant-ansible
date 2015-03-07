@@ -9,9 +9,7 @@ Vagrant.configure("2") do |config|
   # Basic info
   config.vm.box               = "ubuntu/trusty64"
   config.ssh.forward_agent    = true
-  config.vm.synced_folder "../", "/home/vagrant/app", :mount_options => [
-      "dmode=777", "fmode=666"
-  ]
+  config.vm.synced_folder ".", "/home/vagrant/app"
 
   # Configure port forwarding list
   {80 => 8080, 443 => 4433, 3306 => 3307}.each do |from, to|
@@ -28,9 +26,6 @@ Vagrant.configure("2") do |config|
   rescue
     $stdout.puts "VM Configuration Error (in Vagrantfile)"
   end
-
-  # Prior to the ansible run (called via shell), set bash env to eliminate "stdout: not a tty"
-  config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
   # Ansible run
   config.vm.provision :shell, :keep_color => true, :path => "provisioning/init.sh"

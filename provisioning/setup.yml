@@ -3,41 +3,48 @@
   sudo: yes
 
   vars:
-    # App Related
-    httpd_doc_root: "/home/vagrant/app/web"
-    database_name: concrete5_site
-    database_host: "127.0.0.1"
-    database_user: concrete5
-    database_pass: concrete5
+    # Edit these if need be
+    shared:
+      dbhost: "127.0.0.1"
+      dbuser: concrete5
+      dbpass: concrete5
+      dbname: dev_site
 
-    # System Related
+    # System stuff; don't eff w/
     timezone: UTC
-    php_ppa: php5
-    php_packages: ["php5-cli","php-pear","php5-mysql","php5-readline","php5-gd","php5-curl","php5-xdebug"]
-
-    # GeerlingGuy MySQL role
-#    mysql_root_password: root
-#    mysql_databases:
-#      - name: concrete5_site
-#        encoding: utf8
-#        collation: utf8_general_ci
-#    mysql_users:
-#      - name: concrete5
-#        host: "%"
-#        password: concrete5
-#        priv: "*.*:ALL"
+    rbenv:
+      env: user
+      version: v0.4.0
+      ruby_version: 2.2.1
 
   roles:
-    - init
-    - apache
+    # Base system stuff
+    - system
+    # Apache
+    - role: apache
+      vhost_doc_root: "/home/vagrant/app/web"
+      vhost_env_vars:
+        - { name: "DATABASE1_HOST", value: "{{ shared.dbhost }}" }
+        - { name: "DATABASE1_USER", value: "{{ shared.dbuser }}" }
+        - { name: "DATABASE1_PASS", value: "{{ shared.dbpass }}" }
+        - { name: "DATABASE1_NAME", value: "{{ shared.dbname }}" }
+    # MySQL
+    - role: geerlingguy.mysql
+      mysql_root_password: root
+      mysql_databases:
+        - name: "{{ shared.dbname }}"
+          encoding: utf8
+          collation: utf8_general_ci
+      mysql_users:
+        - { name: "{{ shared.dbuser }}", host: "%", password: "{{ shared.dbpass }}", priv: "{{ shared.dbname }}.*:ALL" }
+    # PHP @ 5.6.6
     - php
-    - mysql
-    - ruby
+    # NodeJS
     - nodejs
-#    - concrete5
-#    - geerlingguy/mysql
-
- #
- # Good references
- # https://github.com/M4nu/ansible/blob/master/nodejs/main.yml
- #
+    # Rbenv & Ruby 2.2.1
+    - role: zzet.rbenv
+      rbenv_users:
+        - vagrant
+      rbenv_plugins:
+        - { name: "rbenv-vars", repo: "git://github.com/sstephenson/rbenv-vars.git", version: "v1.2.0" }
+        - { name: "ruby-build", repo: "git://github.com/sstephenson/ruby-build.git", version: "v20150303" }
