@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
   # Basic info
   config.vm.box               = "ubuntu/trusty64"
   config.ssh.forward_agent    = true
-  config.vm.synced_folder ".", "/home/vagrant/app"
+  config.vm.synced_folder "../", "/home/vagrant/app"
 
   # Configure port forwarding list
   {80 => 8080, 443 => 4433, 3306 => 3307}.each do |from, to|
