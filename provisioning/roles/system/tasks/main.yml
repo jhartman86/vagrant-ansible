@@ -9,13 +9,6 @@
     - curl
     - software-properties-common
     - build-essential
-    - autoconf
-    - bison
-    - libssl-dev
-    - libyaml-dev
-    - libncurses5-dev
-    - zlib1g-dev
-    - libcurl4-openssl-dev
 
 - name: Copy locale configuration to /etc/default/locale
   template: src=locale.tpl dest=/etc/default/locale

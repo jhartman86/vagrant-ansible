@@ -12,10 +12,6 @@
 
     # System stuff; don't eff w/
     timezone: UTC
-    rbenv:
-      env: user
-      version: v0.4.0
-      ruby_version: 2.2.1
 
   roles:
     # Base system stuff
@@ -41,10 +37,6 @@
     - php
     # NodeJS
     - nodejs
-    # Rbenv & Ruby 2.2.1
-    - role: zzet.rbenv
-      rbenv_users:
-        - vagrant
-      rbenv_plugins:
-        - { name: "rbenv-vars", repo: "git://github.com/sstephenson/rbenv-vars.git", version: "v1.2.0" }
-        - { name: "ruby-build", repo: "git://github.com/sstephenson/ruby-build.git", version: "v20150303" }
+    # Rbenv
+    - role: rbenv
+      rbenv_user: vagrant

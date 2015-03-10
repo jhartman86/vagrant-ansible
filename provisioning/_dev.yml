@@ -1,0 +1,16 @@
+---
+# ansible-playbook test.yml --connection=local -vvvv
+- hosts: all
+  sudo: yes
+
+  tasks:
+    - name: Has rbenv repo been cloned already?
+      git: repo=git://github.com/sstephenson/rbenv.git dest=/home/vagrant/.rbenv clone=no update=no
+      sudo: true
+      sudo_user: vagrant
+      register: rbenv_exists
+
+    - name: If rbenv does not exist
+      shell: echo null
+      when:
+        - rbenv_exists.before == "null"
