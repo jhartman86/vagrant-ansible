@@ -5,9 +5,16 @@
 
   tasks:
     - name: Has rbenv repo been cloned already?
-      git: repo=git://github.com/sstephenson/rbenv.git dest=/home/vagrant/.rbenv clone=no update=no
-      sudo: true
-      sudo_user: vagrant
+      git: repo=https://github.com/sstephenson/rbenv.git dest=/home/vagrant/testing update=no
+      # git:  repo=https://github.com/sstephenson/rbenv.git
+      #       dest=/home/vagrant/test
+      #       clone=yes
+      #       accept_hostkey=true
+      #       force=yes
+      #       version="v0.4.0"
+      #       update=no
+      # sudo: true
+      # sudo_user: vagrant
       register: rbenv_exists
 
     - name: If rbenv does not exist
