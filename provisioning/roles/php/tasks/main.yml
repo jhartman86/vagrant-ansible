@@ -1,9 +1,6 @@
 ---
 - name: Add PHP5 PPA repository
-  apt_repository: repo={{ php_ppa }}
-
-- name: Update apt cache
-  apt: update_cache=yes
+  apt_repository: repo={{ php_ppa }} state=present update_cache=yes
 
 - name: Install PHP5
   apt: pkg=php5 state=latest
@@ -24,9 +21,44 @@
 - name: Make composer executable
   file: path=/usr/local/bin/composer mode=a+x state=file
 
+- name: Checkout phpredis build directory
+  git:
+    repo: https://github.com/phpredis/phpredis.git
+    dest: /usr/local/src/phpredis
+    version: 2.2.7
+    update: no
+
+- name: Build phpredis extension
+  shell: cd /usr/local/src/phpredis && phpize && ./configure && make && make install
+  sudo: yes
+  args:
+    chdir: /usr/local/src/phpredis
+    creates: /usr/local/src/phpredis/build
+  register: phpredis_result
+
+- name: Add phpredis.ini
+  template: src=redis.ini.j2 dest=/etc/php5/mods-available/redis.ini owner=root group=root mode=777
+
+- name: Enable phpredis module with php5enmod
+  shell: php5enmod redis
+  sudo: yes
+  when: phpredis_result|changed
+
 # PHP Configuration
-- name: Enable short_open_tags in php.ini
+- name: Enable short_open_tags in apache2 php.ini
   lineinfile: dest=/etc/php5/apache2/php.ini regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
   with_items:
     - { regexp: "short_open_tag =", line: "short_open_tag = On" }
+  notify: restart_apache
+
+- name: Enable short_open_tags in cli php.ini
+  lineinfile: dest=/etc/php5/cli/php.ini regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
+  with_items:
+    - { regexp: "short_open_tag =", line: "short_open_tag = On" }
+
+- name: Use redis for sessions
+  lineinfile: dest=/etc/php5/apache2/php.ini regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
+  with_items:
+    - { regexp: "session.save_handler =", line: "session.save_handler = redis" }
+    - { regexp: ";session.save_path =", line: 'session.save_path = \"tcp://127.0.0.1:6379?weight=1\"' }
   notify: restart_apache

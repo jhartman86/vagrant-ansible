@@ -33,4 +33,5 @@ cd /vagrant/provisioning
 # for a dev machine, don't worry about the security; but DO.NOT. setup a hosts file
 # as above for production environments. Ever.
 #ansible-playbook setup.yml --connection=local -vvvv
-ansible-playbook setup.yml -vvvv
+#ansible-playbook setup.yml -vvvv
+ansible-playbook setup.yml

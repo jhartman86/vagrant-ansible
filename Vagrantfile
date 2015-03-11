@@ -30,16 +30,4 @@ Vagrant.configure("2") do |config|
   # Ansible run
   config.vm.provision :shell, :keep_color => true, :path => "provisioning/init.sh"
 
-  # Concrete5 provision
-  #config.vm.provision :shell, :inline => "php /home/vagrant/app/cli/install-concrete5.php " << {
-  #  '--admin-email'     => 'change@me.com',
-  #  '--admin-password'  => 'c5@dmin',
-  #  '--db-database'     => 'concrete5_site',
-  #  '--db-username'     => 'root',
-  #  '--db-password'     => 'root',
-  #  '--db-server'       => 'localhost',
-  #  '--core'            => '/home/vagrant/app/web/concrete/',
-  #  '--target'          => '/home/vagrant/app/web/'
-  #}.map { |k, v| "#{k}=#{v} " }.join(' ')
-
 end

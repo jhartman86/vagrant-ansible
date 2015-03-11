@@ -29,15 +29,22 @@
   args:
     creates: /home/vagrant/app/web/concrete/js/app.js
 
-# Copy config files
-# @note: trailing slash (config"/") is important in the src so it doesn't copy the whole
-# directory, just its contents
+# Copy config files. @note: trailing slash (config"/") is important in the src so
+# it doesn't copy the whole directory, just its contents
 - name: Copy application/config/* files
   copy: src=/home/vagrant/app/pagodabox/copies/config/ dest=/home/vagrant/app/web/application/config/
 
 # Copy bootstrap/start.php
 - name: Copy application/bootstrap/start.php
   copy: src=/home/vagrant/app/pagodabox/copies/bootstrap/start.php dest=/home/vagrant/app/web/application/bootstrap/start.php
+
+# Copy entire src directory to application/src
+- name: Copy application/bootstrap/start.php
+  copy: src=/home/vagrant/app/pagodabox/copies/src/ dest=/home/vagrant/app/web/application/src
+
+# Copy .htaccess file
+- name: Copy htaccess file
+  copy: src=/home/vagrant/app/pagodabox/copies/.htaccess dest=/home/vagrant/app/web/.htaccess
 
 # Run after_exec hook to generate doctrine proxies
 - name: Execute after_exec hook (generate doctrine proxies)
@@ -52,20 +59,4 @@
       --db-database={{ shared.dbname }} \
       --db-username={{ shared.dbuser }} \
       --db-password={{ shared.dbpass }} \
-      --db-server={{ shared.dbhost }} \
-      --core=/home/vagrant/app/web/concrete/ \
-      --target=/home/vagrant/app/web/
-
-
-
-#- name: Run Concrete5 CLI Installer
-#  shell: >
-#    php /home/vagrant/app/cli/install-concrete5.php \
-#      --admin-email=change@me.com \
-#      --admin-password=c5@dmin \
-#      --db-database={{ database_name }} \
-#      --db-username={{ database_user }} \
-#      --db-password={{ database_pass }} \
-#      --db-server={{ database_host }} \
-#      --core=/home/vagrant/app/web/concrete/ \
-#      --target=/home/vagrant/app/web/
+      --db-server={{ shared.dbhost }}
