@@ -20,4 +20,4 @@
   template: src=timezone.tpl dest=/etc/timezone
 
 - name: Configure timezone step 2
-  file: src=/usr/share/zoneinfo/{{timezone}} dest=/etc/localtime state=link force=yes backup=yes
+  file: src=/usr/share/zoneinfo/{{ system_timezone }} dest=/etc/localtime state=link force=yes backup=yes

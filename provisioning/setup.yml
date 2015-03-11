@@ -10,21 +10,22 @@
       dbpass: concrete5
       dbname: dev_site
 
-    # System stuff; don't eff w/
-    timezone: UTC
-
   roles:
-    # Base system stuff
     - system
-    # Apache
+
     - role: apache
-      vhost_doc_root: "/home/vagrant/app/web"
-      vhost_env_vars:
-        - { name: "DATABASE1_HOST", value: "{{ shared.dbhost }}" }
-        - { name: "DATABASE1_USER", value: "{{ shared.dbuser }}" }
-        - { name: "DATABASE1_PASS", value: "{{ shared.dbpass }}" }
-        - { name: "DATABASE1_NAME", value: "{{ shared.dbname }}" }
-    # MySQL
+      apache_users:
+        - vagrant
+      virtual_hosts:
+        - servername: "vagrant" # or "domain.com"
+          serveralias: "*"
+          docroot: "/home/vagrant/app/web"
+          env_vars:
+            - { name: "DATABASE1_HOST", value: "{{ shared.dbhost }}" }
+            - { name: "DATABASE1_USER", value: "{{ shared.dbuser }}" }
+            - { name: "DATABASE1_PASS", value: "{{ shared.dbpass }}" }
+            - { name: "DATABASE1_NAME", value: "{{ shared.dbname }}" }
+
     - role: geerlingguy.mysql
       mysql_root_password: root
       mysql_databases:
@@ -33,14 +34,17 @@
           collation: utf8_general_ci
       mysql_users:
         - { name: "{{ shared.dbuser }}", host: "%", password: "{{ shared.dbpass }}", priv: "{{ shared.dbname }}.*:ALL" }
-    # Redis
+
     - redis
-    # PHP @ 5.6.6
+
     - php
-    # NodeJS
+
     - nodejs
-    # Rbenv
+
     - role: rbenv
       rbenv_user: vagrant
-    # Concrete5 installation
-    - concrete5
+
+    - role: concrete5
+      run_composer: true
+      build_core_assets: true
+      apply_patches: true

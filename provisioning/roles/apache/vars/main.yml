@@ -1,3 +1,16 @@
 ---
-vhost_doc_root: "/home/vagrant/app"
-vhost_env_vars: []
+# Add specific users to www-data (apache) group
+apache_users: []
+
+# Example usage when including this role:
+#- role: apache
+#  virtual_hosts:
+#    - servername: "vagrant" # or "domain.com"
+#      serveralias: "*"
+#      docroot: "/home/vagrant/app/web"
+#      env_vars:
+#        - { name: "DATABASE1_HOST", value: "{{ shared.dbhost }}" }
+#        - { name: "DATABASE1_USER", value: "{{ shared.dbuser }}" }
+#        - { name: "DATABASE1_PASS", value: "{{ shared.dbpass }}" }
+#        - { name: "DATABASE1_NAME", value: "{{ shared.dbname }}" }
+virtual_hosts: []

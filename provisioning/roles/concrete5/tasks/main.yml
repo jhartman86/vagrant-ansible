@@ -1,59 +1,22 @@
 ---
-# Gather stats on installation status
-- stat: path=/home/vagrant/app/web/concrete/vendor
-  register: composer_libs
+- include: composer.yml
+  when: run_composer
 
-# Install composer stuff (concrete/vendor)
-- name: Composer dependencies
-  composer: command=install working-dir=/home/vagrant/app/web/concrete/
-  when: not composer_libs.stat.exists
+- include: build_assets.yml
+  when: build_core_assets
 
-# Install GruntJS?
-- name: Installing GruntJS
-  command: npm install -g grunt-cli
-  sudo: yes
-  args:
-    creates: /usr/bin/grunt
-
-# Install NPM modules if build core assets
-- name: Install NPM modules for Concrete5 core Build
-  command: npm install chdir=/home/vagrant/app/build
-  sudo: yes
-  args:
-    creates: /home/vagrant/app/build/node_modules
-
-# Actually build the assets
-- name: Run Concrete5 asset build
-  command: grunt release chdir=/home/vagrant/app/build
-  sudo: yes
-  args:
-    creates: /home/vagrant/app/web/concrete/js/app.js
-
-# Copy config files. @note: trailing slash (config"/") is important in the src so
-# it doesn't copy the whole directory, just its contents
-- name: Copy application/config/* files
-  copy: src=/home/vagrant/app/pagodabox/copies/config/ dest=/home/vagrant/app/web/application/config/
-
-# Copy bootstrap/start.php
-- name: Copy application/bootstrap/start.php
-  copy: src=/home/vagrant/app/pagodabox/copies/bootstrap/start.php dest=/home/vagrant/app/web/application/bootstrap/start.php
-
-# Copy entire src directory to application/src
-- name: Copy application/bootstrap/start.php
-  copy: src=/home/vagrant/app/pagodabox/copies/src/ dest=/home/vagrant/app/web/application/src
-
-# Copy .htaccess file
-- name: Copy htaccess file
-  copy: src=/home/vagrant/app/pagodabox/copies/.htaccess dest=/home/vagrant/app/web/.htaccess
+- name: Apply patch files
+  copy: src="{{ project_quickstart_dir }}/patch/application/" dest="{{ project_web_root_dir }}/application"
+  when: apply_patches
 
 # Run after_exec hook to generate doctrine proxies
 - name: Execute after_exec hook (generate doctrine proxies)
-  command: php /home/vagrant/app/pagodabox/after_exec.php
+  command: php {{ project_quickstart_dir }}/after_exec.php
 
 # ... And finally, install C5
 - name: Install Concrete5 via CLI
   shell: >
-    php /home/vagrant/app/pagodabox/install.php \
+    php {{ project_quickstart_dir }}/install.php \
       --admin-email=change@me.com \
       --admin-password=c5@dmin \
       --db-database={{ shared.dbname }} \
