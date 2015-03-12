@@ -21,3 +21,12 @@
 
 - name: Configure timezone step 2
   file: src=/usr/share/zoneinfo/{{ system_timezone }} dest=/etc/localtime state=link force=yes backup=yes
+
+# Note: user must already exist in the system!
+- name: Setup environment variables for system users in .profile
+  lineinfile: dest=/home/{{ item.user }}/.profile regexp="{{ item.regexp }}" line="{{ item.line }}" state=present insertafter=EOF backup=yes
+  with_items: user_env_variables
+
+- name: Setup environment variables for system users in .bashrc
+  lineinfile: dest=/home/{{ item.user }}/.bashrc regexp="{{ item.regexp }}" line="{{ item.line }}" state=present insertafter=EOF backup=yes
+  with_items: user_env_variables

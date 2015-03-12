@@ -11,7 +11,12 @@
       dbname: dev_site
 
   roles:
-    - system
+    - role: system
+      user_env_variables:
+        - { user: vagrant, regexp: "export DATABASE1_HOST=", line: "export DATABASE1_HOST={{ shared.dbhost }}" }
+        - { user: vagrant, regexp: "export DATABASE1_USER=", line: "export DATABASE1_USER={{ shared.dbuser }}" }
+        - { user: vagrant, regexp: "export DATABASE1_PASS=", line: "export DATABASE1_PASS={{ shared.dbpass }}" }
+        - { user: vagrant, regexp: "export DATABASE1_NAME=", line: "export DATABASE1_NAME={{ shared.dbname }}" }
 
     - role: apache
       apache_users:
