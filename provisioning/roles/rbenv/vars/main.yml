@@ -5,6 +5,8 @@ rbenv_user: ""
 # Optionals
 rbenv_ruby_version: 2.2.1
 rbenv_root: "/home/{{ rbenv_user }}/.rbenv"
+rbenv_default_gems:
+  - bundler
 rbenv:
   main: { repo: "git://github.com/sstephenson/rbenv.git", version: "v0.4.0" }
   ruby_build: { repo: "git://github.com/sstephenson/ruby-build.git", version: "v20150303" }

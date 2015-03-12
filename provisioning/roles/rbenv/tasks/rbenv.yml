@@ -41,3 +41,12 @@
   shell: $SHELL -lc "rbenv global {{ rbenv_ruby_version }} && rbenv rehash"
   sudo: true
   sudo_user: "{{ rbenv_user }}"
+  register: rbenv_rehashed
+
+# Invoke this way so we can ensure the correct shell (honoring rbenv) is used
+- name: Install default gems
+  shell: $SHELL -lc "gem install {{ item }}"
+  when: rbenv_rehashed.rc == 0
+  sudo: true
+  sudo_user: "{{ rbenv_user }}"
+  with_items: rbenv_default_gems
