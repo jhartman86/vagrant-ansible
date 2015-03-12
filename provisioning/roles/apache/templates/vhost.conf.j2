@@ -8,6 +8,10 @@
     SetEnv {{ env_var.name }} {{ env_var.value }}
 {% endfor %}
 
+{% for php_env_var in item.php_env_vars %}
+    php_value {{ php_env_var.name }} {{ php_env_var.value }}
+{% endfor %}
+
     <Directory {{ item.docroot }}>
         AllowOverride All
         Require all granted
