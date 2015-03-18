@@ -11,7 +11,7 @@
 
 # Run after_exec hook to generate doctrine proxies
 - name: Execute after_exec hook (generate doctrine proxies)
-  command: php {{ project_quickstart_dir }}/after_exec.php
+  command: php {{ project_quickstart_dir }}/generate_proxies.php
 
 # ... And finally, install C5
 - name: Install Concrete5 via CLI
