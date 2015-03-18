@@ -17,6 +17,8 @@
         - { user: vagrant, regexp: "export DATABASE1_USER=", line: "export DATABASE1_USER={{ shared.dbuser }}" }
         - { user: vagrant, regexp: "export DATABASE1_PASS=", line: "export DATABASE1_PASS={{ shared.dbpass }}" }
         - { user: vagrant, regexp: "export DATABASE1_NAME=", line: "export DATABASE1_NAME={{ shared.dbname }}" }
+        - { user: vagrant, regexp: "export CACHE1_HOST=", line: "export CACHE1_HOST=127.0.0.1" }
+        - { user: vagrant, regexp: "export CACHE1_PORT=", line: "export CACHE1_PORT=6379" }
 
     - role: apache
       apache_users:
