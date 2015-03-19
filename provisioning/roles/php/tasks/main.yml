@@ -21,6 +21,16 @@
 - name: Make composer executable
   file: path=/usr/local/bin/composer mode=a+x state=file
 
+- name: Install PHPUnit 4.5.0
+  shell: >
+    cd /usr/local/bin \
+      && wget https://phar.phpunit.de/phpunit.phar \
+      && mv phpunit.phar phpunit \
+      && chmod +x phpunit
+  sudo: yes
+  args:
+    creates: /usr/local/bin/phpunit.phar
+
 - name: Checkout phpredis build directory
   git:
     repo: https://github.com/phpredis/phpredis.git
