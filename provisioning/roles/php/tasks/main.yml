@@ -12,6 +12,9 @@
   apt: pkg={{ item }} state=present
   with_items: php_packages
 
+- name: Configure Xdebug
+  template: src=xdebug.ini.j2 dest=/etc/php5/mods-available/xdebug.ini owner=root group=root mode=0644
+
 - name: Install Composer
   shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin creates=/usr/local/bin/composer
 
@@ -29,7 +32,7 @@
       && chmod +x phpunit
   sudo: yes
   args:
-    creates: /usr/local/bin/phpunit.phar
+    creates: /usr/local/bin/phpunit
 
 - name: Checkout phpredis build directory
   git:
@@ -47,7 +50,7 @@
   register: phpredis_result
 
 - name: Add phpredis.ini
-  template: src=redis.ini.j2 dest=/etc/php5/mods-available/redis.ini owner=root group=root mode=777
+  template: src=redis.ini.j2 dest=/etc/php5/mods-available/redis.ini owner=root group=root mode=0644
 
 - name: Enable phpredis module with php5enmod
   shell: php5enmod redis
