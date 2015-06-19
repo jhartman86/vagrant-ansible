@@ -3,8 +3,12 @@ This uses Ansible as the provisioner in a different way than as documented on Va
 
 Out of the box, if you run `vagrant up` right away, the whole kit and kaboodle includes:
 
-	* Apache (2.4+) straight from the default Ubuntu PPA
+	* Apache (2.4+, latest stable for Ubuntu14)
 	* MySQL (5.6)
+	* Redis (latest stable for Ubuntu14)
+	* PHP 5.6 (using ondrej/php5-5.6 PPA)
+	* NodeJS (latest stable for Ubuntu14)
+	* Rbenv/Ruby @ 2.2.1
 
 #### Usage
 
