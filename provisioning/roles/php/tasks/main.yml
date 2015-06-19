@@ -12,66 +12,25 @@
   apt: pkg={{ item }} state=present
   with_items: php_packages
 
-- name: Configure Xdebug
-  template: src=xdebug.ini.j2 dest=/etc/php5/mods-available/xdebug.ini owner=root group=root mode=0644
+- include: xdebug.yml
+  when: install_xdebug == true
 
-- name: Install Composer
-  shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin creates=/usr/local/bin/composer
+- include: composer.yml
+  when: install_composer == true
 
-- name: Rename composer.phar to composer
-  shell: mv /usr/local/bin/composer.phar /usr/local/bin/composer creates=/usr/local/bin/composer
+- include: phpunit.yml
+  when: install_phpunit == true
 
-- name: Make composer executable
-  file: path=/usr/local/bin/composer mode=a+x state=file
+# note: we can build the extension, but Redis is still expected to be available!
+- include: phpredis.yml
+  when: install_phpredis == true
 
-- name: Install PHPUnit 4.5.0
-  shell: >
-    cd /usr/local/bin \
-      && wget https://phar.phpunit.de/phpunit.phar \
-      && mv phpunit.phar phpunit \
-      && chmod +x phpunit
-  sudo: yes
-  args:
-    creates: /usr/local/bin/phpunit
+# php.ini settings for Apache
+- name: php.ini configs - HTTPD
+  lineinfile: dest=/etc/php5/apache2/php.ini regexp="{{ item.key }} =" line="{{ item.key }} = {{ item.val }}" backup=yes
+  with_items: "{{ phpINI_httpd_defaults + phpINI_httpd_settings }}"
 
-- name: Checkout phpredis build directory
-  git:
-    repo: https://github.com/phpredis/phpredis.git
-    dest: /usr/local/src/phpredis
-    version: 2.2.7
-    update: no
-
-- name: Build phpredis extension
-  shell: cd /usr/local/src/phpredis && phpize && ./configure && make && make install
-  sudo: yes
-  args:
-    chdir: /usr/local/src/phpredis
-    creates: /usr/local/src/phpredis/build
-  register: phpredis_result
-
-- name: Add phpredis.ini
-  template: src=redis.ini.j2 dest=/etc/php5/mods-available/redis.ini owner=root group=root mode=0644
-
-- name: Enable phpredis module with php5enmod
-  shell: php5enmod redis
-  sudo: yes
-  when: phpredis_result|changed
-
-# PHP Configuration
-- name: Enable short_open_tags in apache2 php.ini
-  lineinfile: dest=/etc/php5/apache2/php.ini regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
-  with_items:
-    - { regexp: "short_open_tag =", line: "short_open_tag = On" }
-  notify: restart_apache
-
-- name: Enable short_open_tags in cli php.ini
-  lineinfile: dest=/etc/php5/cli/php.ini regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
-  with_items:
-    - { regexp: "short_open_tag =", line: "short_open_tag = On" }
-
-- name: Use redis for sessions
-  lineinfile: dest=/etc/php5/apache2/php.ini regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
-  with_items:
-    - { regexp: "session.save_handler =", line: "session.save_handler = redis" }
-    - { regexp: ";session.save_path =", line: 'session.save_path = \"tcp://127.0.0.1:6379?weight=1\"' }
-  notify: restart_apache
+# php.ini settings for CLI
+- name: php.ini configs - CLI
+  lineinfile: dest=/etc/php5/cli/php.ini regexp="{{ item.key }} =" line="{{ item.key }} = {{ item.val }}" backup=yes
+  with_items: "{{ phpINI_cli_defaults + phpINI_cli_settings }}"

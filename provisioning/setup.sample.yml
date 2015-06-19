@@ -3,14 +3,24 @@
   sudo: yes
 
   vars:
-    # Edit these if need be
+    install_apache: true
+    install_mysql: true
+    install_redis: true
+    install_php: true
+    install_nodejs: true
+    install_ruby: true
+    autoinstall_C5: false
+    # Edit these if you prefer
     shared:
       dbhost: "127.0.0.1"
-      dbuser: concrete5
-      dbpass: concrete5
+      dbuser: dev_user
+      dbpass: dev_pass
       dbname: dev_site
 
   roles:
+    ######################################################################
+    # Setup base system stuff; generally don't screw with this...
+    ######################################################################
     - role: system
       user_env_variables:
         - { user: vagrant, regexp: "export DATABASE1_HOST=", line: "export DATABASE1_HOST={{ shared.dbhost }}" }
@@ -20,6 +30,21 @@
         - { user: vagrant, regexp: "export CACHE1_HOST=", line: "export CACHE1_HOST=127.0.0.1" }
         - { user: vagrant, regexp: "export CACHE1_PORT=", line: "export CACHE1_PORT=6379" }
 
+    ######################################################################
+    # Installs Apache if you specify true in the vars at the top
+    # --------------------------------------------------------------------
+    # virtual_hosts: contains settings for defining a virtual host file;
+    # if you're installing Apache, you want at least one. The defaults
+    # are probably OK, the only thing you want to focus on is the 'docroot'
+    # variable. In your project, if you're project structure looks like
+    # this:
+    # myproject/
+    #   vagrant/
+    #   other_stuff/
+    #   web/
+    #     index.php * <- entry point
+    # then you'd want to set it to /home/vagrant/app/web
+    ######################################################################
     - role: apache
       apache_users:
         - vagrant
@@ -37,7 +62,11 @@
             - { name: "post_max_size", value: "8M" }
             - { name: "max_input_time", value: "300" }
             - { name: "max_execution_time", value: "300" }
+      when: install_apache == true
 
+    ######################################################################
+    # Installs MySQL if you specify true in the vars at the top
+    ######################################################################
     - role: geerlingguy.mysql
       mysql_root_password: root
       mysql_databases:
@@ -47,11 +76,43 @@
       mysql_users:
         - { name: "admin", host: "%", password: "admin", priv: "*.*:ALL" }
         - { name: "{{ shared.dbuser }}", host: "%", password: "{{ shared.dbpass }}", priv: "{{ shared.dbname }}.*:ALL" }
+      when: install_mysql == true
 
-    - redis
+    ######################################################################
+    # Installs Redis if you specify true in the vars at the top
+    ######################################################################
+    - role: redis
+      when: install_redis == true
 
-    - php
+    ######################################################################
+    # Install PHP (see roles/php/vars for examples of var definitions)
+    # --------------------------------------------------------------------
+    # To modify php.ini settings for httpd/apache, add
+    #   phpINI_httpd_settings:
+    #     - { key: "config_key", val: "config_values" }
+    # --------------------------------------------------------------------
+    # To modify php.ini settings for CLI, add
+    #   phpINI_httpd_settings:
+    #     - { key: "config_key", val: "config_values" }
+    ######################################################################
+    - role: php
+      install_xdebug: false
+      install_phpunit: false
+      install_composer: true
+      install_phpredis: true
+      use_phpredis_sessions: true
+      when: install_php == true
 
+    ######################################################################
+    # Install NodeJS (see roles/nodejs/vars for examples of var definitions)
+    # --------------------------------------------------------------------
+    # npm_global_packages: will install system-wide
+    # --------------------------------------------------------------------
+    # npm_package_json: will look for package.json in the file directory path
+    # you specify and run 'install' on it. If you don't want to auto-install
+    # packages on provisioning the machine, just remove npm_package_json and
+    # subsequent lines
+    ######################################################################
     - role: nodejs
       npm_global_packages:
         - gulp
@@ -59,19 +120,46 @@
       npm_package_json:
         install: true
         path: "/home/vagrant/app"
+      when: install_nodejs == true
 
+    ######################################################################
+    # Install Ruby/Rbenv (see roles/rbenv/vars for examples of var definitions);
+    # note, this sets up for the USER, not system-wide.
+    # --------------------------------------------------------------------
+    # rbenv_user: almost always leave to vagrant, unless you're going to
+    # point this ansible run at a host you want to use for something else
+    # --------------------------------------------------------------------
+    # rbenv_default_gems: specify what gems to install by default
+    # --------------------------------------------------------------------
+    # Optionally, specify the ruby version with "rbenv_ruby_version"; it
+    # defaults to 2.2.1. Note that this is the only guaranteed version to
+    # build OK.
+    ######################################################################
     - role: rbenv
       rbenv_user: vagrant
       rbenv_default_gems:
         - bundler
         - compass
+      when: install_ruby == true
 
+    ######################################################################
+    # Since we use this for Concrete5 a lot (although it is generic),
+    # enable autoinstall_C5 if you're dropping into a C5 project and this
+    # will install during the provision.
+    ######################################################################
     - role: concrete5
       run_composer: true
       build_core_assets: true
       apply_patches: true
+      when: autoinstall_C5 == true
 
   # Random stuff after main dependencies are provisioned
-  tasks:
+  post_tasks:
     - name: Install MySQL timezone tables
       shell: mysql_tzinfo_to_sql 2>/dev/null /usr/share/zoneinfo | mysql -u root --password=root mysql 2>/dev/null
+      when: install_mysql == true
+
+    - name: Restart apache
+      shell: echo null 2>/dev/null
+      notify: restart_apache
+      when: install_apache == true

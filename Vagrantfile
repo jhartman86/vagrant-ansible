@@ -15,6 +15,11 @@ Vagrant.configure("2") do |config|
   # into the vm at /home/vagrant/app
   config.vm.synced_folder "../", "/home/vagrant/app"
 
+  # Ansible chokes when the hosts.local file is marked as executable; so we have
+  # to adjust the mount permissions on the vagrant folder (which is auto-mounted by
+  # default)
+  config.vm.synced_folder ".", "/vagrant", mount_options: ["dmode=775,fmode=664"]
+
   # Above we mount the parent, but by default no directories are writable-to by apache. This
   # mounts the files/ directory (the ONLY one that should be writable) with different permissions.
   config.vm.synced_folder "../web/application/files", "/home/vagrant/app/web/application/files",
