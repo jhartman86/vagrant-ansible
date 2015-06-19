@@ -16,7 +16,11 @@
 - name: Ensure MySQL is stopped after initial install.
   service: name=mysql state=stopped
   when: mysql_installed.stat.exists == false
+  ignore_errors: true
+# @note-customization: added ignore_errors as this fails but isn't important
 
 - name: Delete innodb log files created by apt package after initial install.
   shell: "rm -f {{ mysql_datadir }}/ib_logfile[01]"
   when: mysql_installed.stat.exists == false
+  ignore_errors: true
+# @note-customization: added ignore_errors as this fails but isn't important
