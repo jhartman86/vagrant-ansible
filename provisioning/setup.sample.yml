@@ -66,9 +66,17 @@
 
     ######################################################################
     # Installs MySQL if you specify true in the vars at the top
+    # --------------------------------------------------------------------
+    # The __mysql_packages settings below will override the default Ubuntu
+    # 14 default of install 5.5. If you DO want to use 5.5, simply remove
+    # the __mysql_packages all together.
     ######################################################################
     - role: geerlingguy.mysql
       mysql_root_password: root
+      __mysql_packages:
+        - mysql-server-5.6
+        - mysql-common-5.6
+        - python-mysqldb
       mysql_databases:
         - name: "{{ shared.dbname }}"
           encoding: utf8

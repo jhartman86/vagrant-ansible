@@ -1,6 +1,11 @@
 ### Vagrant (Ubuntu 14.04)
 This uses Ansible as the provisioner in a different way than as documented on Vagrant's website. Instead of needing to install Ansible on your host machine, this will download and build Ansible inside the VM, and then execute on itself. This makes it a helluvalot more portable.
 
+Out of the box, if you run `vagrant up` right away, the whole kit and kaboodle includes:
+
+	* Apache (2.4+) straight from the default Ubuntu PPA
+	* MySQL (5.6)
+
 #### Usage
 
 1. Clone this repo and put it in a `vagrant` dir in your project root.
