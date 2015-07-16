@@ -19,7 +19,9 @@ Vagrant.configure("2") do |config|
   }
 
   # Port mappings (vm => your host)
-  port_mappings = {}
+  port_mappings = {
+    80 => 8080
+  }
 
   # Enable writing-to these folders by apache. By default, when vagrant
   # mounts the entire project as a shared folder, apache won't be able
