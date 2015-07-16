@@ -48,8 +48,8 @@ Vagrant.configure("2") do |config|
   # Above we mount the parent, but by default no directories are writable-to by apache. This
   # mounts the files/ directory (the ONLY one that should be writable) with different permissions.
   httpd_writable_dirs.each do |dict|
-    config.vm.synced_folder dict['host_relative_path'], dict['vm_absolute_path'],
-      owner: dict['owner'], group: ['dict.group'], mount_options: ['dict.mount_options']
+    config.vm.synced_folder dict[:host_relative_path], dict[:vm_absolute_path],
+      owner: dict[:owner], group: dict[:group], mount_options: dict[:mount_options]
   end
   # config.vm.synced_folder "../web/application/files", "/home/vagrant/app/web/application/files",
   #   owner: "vagrant",
