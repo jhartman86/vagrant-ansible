@@ -24,4 +24,8 @@ fi
 # NOTE: if you run --connection=local flag, ansible's git clone fails in current version,
 # so that's why we add all the bullshit info above to the hosts file (eg. "ansible_ssh_pass...")
 # instead of just running connection=local.
-cd /vagrant/provisioning && ansible-playbook -i hosts.local setup.yml
+# cd /vagrant/provisioning && ansible-playbook -i hosts.local setup.yml
+
+cd /home/vagrant/app/vagrant &&
+    ansible-playbook -i 127.0.0.1, setup.yml \
+    --extra-vars "ansible_ssh_user=vagrant ansible_ssh_pass=vagrant ansible_sudo_pass=vagrant"

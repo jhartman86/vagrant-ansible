@@ -31,8 +31,8 @@ Vagrant.configure("2") do |config|
 
   # If parent directory contains vagrant_configs.rb file, load and merge
   # settings.
-  if File.exists?('../vagrant_configs.rb')
-    require_relative '../vagrant_configs'
+  if File.exists?('vagrant_configs.rb')
+    require_relative 'vagrant_configs'
 
     # Merge resource values
     if VM_SETTINGS[:resource_values]
@@ -51,9 +51,9 @@ Vagrant.configure("2") do |config|
   end
 
   # Standard vagrant stuff
-  config.vm.box               = "ubuntu/trusty64"
-  config.vm.box_check_update  = false
-  config.ssh.forward_agent    = true
+  config.vm.box                 = "ubuntu/vivid64" # 15.04
+  config.vm.box_check_update    = false
+  config.ssh.forward_agent      = true
 
   # This vagrant directory should always be within the project root; below we mount the parent folder
   # into the vm at /home/vagrant/app
@@ -62,7 +62,7 @@ Vagrant.configure("2") do |config|
   # Ansible chokes when the hosts.local file is marked as executable; so we have
   # to adjust the mount permissions on the vagrant folder (which is auto-mounted by
   # default)
-  config.vm.synced_folder ".", "/vagrant", mount_options: ["dmode=775,fmode=664"]
+  # config.vm.synced_folder ".", "/vagrant", mount_options: ["dmode=775,fmode=664"]
 
   # Above we mount the parent, but by default no directories are writable-to by apache. This
   # mounts the files/ directory (the ONLY one that should be writable) with different permissions.
@@ -88,6 +88,6 @@ Vagrant.configure("2") do |config|
   end
 
   # Ansible run
-  config.vm.provision :shell, :keep_color => true, :path => "provisioning/init.sh"
+  config.vm.provision :shell, :keep_color => true, :path => "init.sh"
 
 end

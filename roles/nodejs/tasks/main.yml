@@ -1,22 +1,21 @@
 ---
-- name: Check nodejs is installed
+- name: Check NodeJS is installed
   shell: $SHELL -lc "which nodejs"
   sudo: true
   register: nodejs_installed
   ignore_errors: yes
 
-- name: Register NodeJS PPA
-  shell: curl -sL https://deb.nodesource.com/setup | sudo bash -
+- name: Setup NodeJSv4 PPA from debsource
+  shell: curl --silent --location https://deb.nodesource.com/setup_4.x | sudo bash -
   when:
     - nodejs_installed.rc == 1
 
 - name: Install NodeJS and NPM
   apt: pkg=nodejs state=installed update_cache=yes
-  register: nodejs_package_installed
   when:
     - nodejs_installed.rc == 1
 
-- name: Install global npm packages
+- name: Install global NPM packages
   npm: name={{ item }} global=yes state=present
   with_items: npm_global_packages
 
