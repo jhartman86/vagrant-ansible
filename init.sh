@@ -27,5 +27,5 @@ fi
 # cd /vagrant/provisioning && ansible-playbook -i hosts.local setup.yml
 
 cd /home/vagrant/app/vagrant &&
-    ansible-playbook -i 127.0.0.1, setup.yml \
+    ansible-playbook -i 127.0.0.1, run.yml \
     --extra-vars "ansible_ssh_user=vagrant ansible_ssh_pass=vagrant ansible_sudo_pass=vagrant"

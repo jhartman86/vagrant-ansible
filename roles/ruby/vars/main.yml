@@ -1,0 +1,7 @@
+---
+# Required; if using rbenv
+ruby_user: ""
+
+# Optionals
+ruby_default_gems:
+  - bundler

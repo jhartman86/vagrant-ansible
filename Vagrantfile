@@ -7,7 +7,7 @@ Vagrant.require_version ">= 1.6"
 ###########################################################################
 # As this Vagrant box could potentially be used as a submodule and we don't
 # want to checkin project-specific changes upstream, you shouldn't need to
-# change anything in this file. Instead, use a vagrant_configs.rb file (see
+# change anything in this file. Instead, use a vagrant-configs.rb file (see
 # README for details).
 ###########################################################################
 Vagrant.configure("2") do |config|
@@ -29,10 +29,10 @@ Vagrant.configure("2") do |config|
   # permissions on specific subdirectories so you can write to them.
   httpd_writable_dirs = []
 
-  # If parent directory contains vagrant_configs.rb file, load and merge
+  # If parent directory contains vagrant-configs.rb file, load and merge
   # settings.
-  if File.exists?('vagrant_configs.rb')
-    require_relative 'vagrant_configs'
+  if File.exists?('../vagrant-configs.rb')
+    require_relative '../vagrant-configs'
 
     # Merge resource values
     if VM_SETTINGS[:resource_values]

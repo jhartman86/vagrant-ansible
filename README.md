@@ -22,10 +22,10 @@ Out of the box, if you run `vagrant up` right away, the whole kit and kaboodle i
 2. In the `vagrant/provisioning` directory, copy or rename the file `setup.sample.yml` to `setup.yml`. Then modify the setup.yml file per your project needs. Documentation is included in the comments and hopefully its fairly straight forward. Note that the setup.yml file will NOT be tracked in version control by default; if you are working on a project team you probably want it saved somewhere (OUTSIDE the vagrant directory, b/c its a submodule) that can just be copied in. Something
 like `vagrant-setup.copy-me.yml` in the project root.
 
-3. Optionally, copy and rename the file `vagrant_configs.sample.rb` to the PARENT directory (probably your project root)
-and rename to `vagrant_configs.rb`. You can put Vagrant customizations in here and check into your project for tracking.
-Regarding port mappings: port 80 inside the VM will map to 8080 on your host machine and is setup as a default; 443 to 4433 
-(if you want to test w/ SSL), and 3306 to 3307 (for accessing MySQL from a GUI on your host machine). If you want to 
+3. Optionally, copy and rename the file `vagrant-configs.sample.rb` to the PARENT directory (probably your project root)
+and rename to `vagrant-configs.rb`. You can put Vagrant customizations in here and check into your project for tracking.
+Regarding port mappings: port 80 inside the VM will map to 8080 on your host machine and is setup as a default; 443 to 4433
+(if you want to test w/ SSL), and 3306 to 3307 (for accessing MySQL from a GUI on your host machine). If you want to
 adjust/add/remove any of these, feel free. Read the Vagrant docs on port mapping if you need help.
 
 4. `$: cd vagrant && vagrant up` will build and provision the VM with everything install :)
