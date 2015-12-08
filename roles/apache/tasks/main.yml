@@ -10,6 +10,11 @@
     - vhost_alias
     - headers
     - expires
+    - ssl
+
+- name: Install self-signed cert for SSL testing
+  copy: src=vagrant_apache_ssl.pem dest=/etc/ssl/certs/vagrant_apache_ssl.pem group=root owner=root mode=0644
+  sudo: true
 
 - name: Purge all existing virtual host configurations
   file: path={{ item }} state=absent
@@ -22,8 +27,18 @@
   template: src=vhost.conf.j2 dest=/etc/apache2/sites-available/{{ item.servername }}.conf
   with_items: virtual_hosts
 
+- name: Create SSL virtual host configurations for enabled sites
+  template: src=vhost-ssl.conf.j2 dest=/etc/apache2/sites-available/{{ item.servername }}-ssl.conf
+  with_items: virtual_hosts
+
 - name: Enable virtual hosts
   shell: a2ensite {{ item.servername }}.conf
+  sudo: yes
+  with_items: virtual_hosts
+  notify: restart_apache
+
+- name: Enable SSL virtual hosts
+  shell: a2ensite {{ item.servername }}-ssl.conf
   sudo: yes
   with_items: virtual_hosts
   notify: restart_apache
