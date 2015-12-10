@@ -11,16 +11,26 @@ php_packages:
   - php5-gd
   - php5-curl
 
-install_xdebug: false
-install_phpunit: false
-install_composer: true
-install_phpredis: true
-use_phpredis_sessions: true
+# Extra things to install
+php_install_xdebug: false
+php_install_phpunit: false
+php_install_composer: false
+php_install_redis_ext: false
 
-phpINI_httpd_settings: []
-phpINI_httpd_defaults:
-  - { key: "short_open_tag", val: "On" }
+# Just because Redis extension is installed doesn't necessarily
+# mean it'll get used for sessions. To configure php.ini to use
+# Redis for sessions:
+php_sessions_use_redis: false
 
-phpINI_cli_settings: []
-phpINI_cli_defaults:
-  - { key: "short_open_tag", val: "On" }
+# Empty list by default, define customizations at the role
+# include level (the implementing playbook)
+php_ini_settings: []
+
+# Empty by default, but if php_sessions_use_redis == true, this
+# will be overridden in the phpredis.yml via an include_vars.
+php_ini_session_settings: []
+
+# Actual defaults (always included, but overridable at the
+# playbook level w/ php_ini_settings values).
+php_ini_defaults:
+  - { k: 'short_open_tag', v: 'On' }

@@ -1,0 +1,4 @@
+---
+php_ini_session_settings:
+  - { k: 'session.save_handler', v: 'redis' }
+  - { k: 'session.save_path', v: '"tcp://127.0.0.1:6379?weight=1"' }

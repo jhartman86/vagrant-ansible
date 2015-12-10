@@ -13,24 +13,28 @@
   with_items: php_packages
 
 - include: xdebug.yml
-  when: install_xdebug == true
+  when: php_install_xdebug == true
 
 - include: composer.yml
-  when: install_composer == true
+  when: php_install_composer == true
 
 - include: phpunit.yml
-  when: install_phpunit == true
+  when: php_install_phpunit == true
 
 # note: we can build the extension, but Redis is still expected to be available!
 - include: phpredis.yml
-  when: install_phpredis == true
+  when: php_install_redis_ext == true
 
-# php.ini settings for Apache
-- name: php.ini configs - HTTPD
-  lineinfile: dest=/etc/php5/apache2/php.ini regexp="{{ item.key }} =" line="{{ item.key }} = {{ item.val }}" backup=yes
-  with_items: "{{ phpINI_httpd_defaults + phpINI_httpd_settings }}"
+- name: Copy php.ini for HTTPD
+  copy: src=php.ini-httpd dest=/etc/php5/apache2/php.ini
 
-# php.ini settings for CLI
-- name: php.ini configs - CLI
-  lineinfile: dest=/etc/php5/cli/php.ini regexp="{{ item.key }} =" line="{{ item.key }} = {{ item.val }}" backup=yes
-  with_items: "{{ phpINI_cli_defaults + phpINI_cli_settings }}"
+- name: Copy php.ini for CLI
+  copy: src=php.ini-cli dest=/etc/php5/cli/php.ini
+
+- name: Customize php.ini for HTTPD
+  lineinfile: dest=/etc/php5/apache2/php.ini regexp='{{ item.k }} =' line='{{ item.k }} = {{ item.v }}'
+  with_items: "{{ (php_ini_defaults + php_ini_session_settings) + php_ini_settings }}"
+
+- name: Customize php.ini for CLI
+  lineinfile: dest=/etc/php5/cli/php.ini regexp='{{ item.k }} =' line='{{ item.k }} = {{ item.v }}'
+  with_items: "{{ (php_ini_defaults + php_ini_session_settings) + php_ini_settings }}"

@@ -22,9 +22,7 @@
   sudo: yes
   when: phpredis_result|changed
 
-- name: Use redis for sessions
-  lineinfile: dest=/etc/php5/apache2/php.ini regexp="{{ item.regexp }}" line="{{ item.line }}" backup=yes
-  with_items:
-    - { regexp: "session.save_handler =", line: "session.save_handler = redis" }
-    - { regexp: ";session.save_path =", line: 'session.save_path = \"tcp://127.0.0.1:6379?weight=1\"' }
-  when: use_phpredis_sessions == true
+# If php_sessions_redis == true, we OVERWRITE the php_ini_session_settings
+- name: Override php_ini_session_settings with Redis definitions
+  include_vars: php_ini_session_redis.yml
+  when: php_sessions_use_redis == true
