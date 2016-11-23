@@ -25,9 +25,9 @@
 # Note: user must already exist in the system!
 # http://unix.stackexchange.com/questions/117467/how-to-permanently-set-environmental-variables
 - name: Setup environment variables for system users in .profile
-  lineinfile: dest=/home/{{ item.user }}/.profile regexp="{{ item.regexp }}" line="{{ item.line }}" state=present insertafter=EOF backup=yes
-  with_items: user_env_variables
+  lineinfile: dest="/home/{{ item.user }}/.profile" regexp="{{ item.regexp }}" line="{{ item.line }}" state=present insertafter=EOF backup=yes
+  with_items: "{{user_env_variables}}"
 
 - name: Setup environment variables for system users in .bashrc
   lineinfile: dest=/home/{{ item.user }}/.bashrc regexp="{{ item.regexp }}" line="{{ item.line }}" state=present insertafter=EOF backup=yes
-  with_items: user_env_variables
+  with_items: "{{user_env_variables}}"

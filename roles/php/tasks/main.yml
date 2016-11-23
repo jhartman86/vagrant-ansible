@@ -1,16 +1,19 @@
 ---
 - name: Add PHP5 PPA repository
-  apt_repository: repo={{ php_ppa }} state=present update_cache=yes
+  apt_repository: repo="{{ php_ppa }}" state=present update_cache=yes
+
+- name: Install PHP5 core
+  apt: pkg=php5 state=present
 
 - name: Install PHP5
-  apt: pkg=php5 state=present
+  apt: pkg=php5-common state=present
 
 - name: Install PHP5-cli
   apt: pkg=php5-cli state=present
 
 - name: Install PHP packages
-  apt: pkg={{ item }} state=present
-  with_items: php_packages
+  apt: pkg="{{ item }}" state=present
+  with_items: "{{php_packages}}"
 
 - include: xdebug.yml
   when: php_install_xdebug == true

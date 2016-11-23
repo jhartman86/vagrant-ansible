@@ -1,5 +1,5 @@
 ---
-php_ppa: ppa:ondrej/php5-5.6
+php_ppa: "ppa:ondrej/php"
 
 php_packages:
   - php5-cli

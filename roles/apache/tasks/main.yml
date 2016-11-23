@@ -3,7 +3,7 @@
   apt: pkg=apache2 state=latest
 
 - name: Install Apache Modules
-  apache2_module: state=present name={{ item}}
+  apache2_module: state=present name="{{item}}"
   notify: restart_apache
   with_items:
     - rewrite
@@ -23,24 +23,24 @@
 
 - name: Create virtual host configurations for enabled sites
   template: src=vhost.conf.j2 dest=/etc/apache2/sites-available/{{ item.servername }}.conf
-  with_items: virtual_hosts
+  with_items: "{{virtual_hosts}}"
 
 - name: Create SSL virtual host configurations for enabled sites
   template: src=vhost-ssl.conf.j2 dest=/etc/apache2/sites-available/{{ item.servername }}-ssl.conf
-  with_items: virtual_hosts
+  with_items: "{{virtual_hosts}}"
 
 - name: Enable virtual hosts
   shell: a2ensite {{ item.servername }}.conf
   sudo: yes
-  with_items: virtual_hosts
+  with_items: "{{virtual_hosts}}"
   notify: restart_apache
 
 - name: Enable SSL virtual hosts
   shell: a2ensite {{ item.servername }}-ssl.conf
   sudo: yes
-  with_items: virtual_hosts
+  with_items: "{{virtual_hosts}}"
   notify: restart_apache
 
 - name: Add users to www-data/apache group
-  user: name={{ item }} groups=www-data append=yes
-  with_items: apache_users
+  user: name="{{ item }}" groups=www-data append=yes
+  with_items: "{{apache_users}}"

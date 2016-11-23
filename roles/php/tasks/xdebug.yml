@@ -1,6 +1,6 @@
 ---
 - name: Install Xdebug PHP package
-  apt: pkg={{ item }} state=present
+  apt: pkg="{{ item }}" state=present
   with_items:
     - php5-xdebug
 
